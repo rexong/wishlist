@@ -1,8 +1,9 @@
 from fastapi import FastAPI, status, Depends, HTTPException
-import models
-from database import engine, SessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
+
+from . import models, schemas, auth
+from .database import engine, SessionLocal
 
 app = FastAPI()
 
