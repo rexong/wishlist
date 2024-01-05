@@ -1,18 +1,13 @@
-import uvicorn
-from fastapi import FastAPI, status, Depends, HTTPException
+from fastapi import FastAPI, status, Depends
 from typing import Annotated
-from sqlalchemy.orm import Session
 
-from . import models, schemas
+from . import schemas
 from .auth import Auth
 from .auth.services import get_current_user
-
-from .database import engine, Get_DB
 
 app = FastAPI()
 app.include_router(Auth.router)
 
-db_dependency = Annotated[Session, Depends(Get_DB)]
 user_dependency = Annotated[schemas.User, Depends(get_current_user)]
 
 @app.get('/me', status_code = status.HTTP_200_OK, response_model=schemas.User)
