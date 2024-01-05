@@ -16,7 +16,8 @@ ALGORITHM = "HS256"
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
-AUTHENTICATION_EXCEPTION = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate user.")
+AUTHENTICATION_EXCEPTION = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could Not Validate User")
+USER_NOT_FOUND_EXCEPTION = HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found")
 
 def hash_password(password):
     return bcrypt_context.hash(password)
@@ -35,14 +36,11 @@ def create_access_token(email: str, user_id: int, expires_delta: timedelta = tim
     encode.update({'exp': expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def get_user_from_db_by_email(email: str, db: Session) -> models.User:
-    userDB = db.query(models.User).filter(models.User.email == email).first()
-    if not userDB:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found!")
-    return userDB
+def get_user_from_db_by_email(email: str, db: Session) -> models.User | None:
+    return db.query(models.User).filter(models.User.email == email).first()
 
 def add_new_user_to_db(email: str, password: str, db: Session):
-    userDB = db.query(models.User).filter(models.User.email == email).first()
+    userDB = get_user_from_db_by_email(email, db)
     if userDB:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email already exists")
     _hash_password = hash_password(password)
@@ -57,6 +55,8 @@ def add_new_user_to_db(email: str, password: str, db: Session):
 
 def delete_user_from_db(email: str, db: Session) -> models.User:
     userDB = get_user_from_db_by_email(email, db)
+    if not userDB:
+        raise USER_NOT_FOUND_EXCEPTION
     db.delete(userDB)
     db.commit()
     return userDB
