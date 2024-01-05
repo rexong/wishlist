@@ -7,8 +7,8 @@ from jose import jwt, JWTError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from . import schemas, models
-from .database import Get_DB
+from .. import schemas, models
+from ..database import Get_DB
 
 router = APIRouter(
     prefix='/auth',
