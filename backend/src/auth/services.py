@@ -20,11 +20,13 @@ def hash_password(password):
     return bcrypt_context.hash(password)
 
 def authenticate_user(username: str, password: str, db: Session):
+    AUTHENTICATION_EXCEPTION = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate user.")
+
     user = db.query(models.User).filter(models.User.username == username).first()
     if not user:
-        return False
-    if not bcrypt_context.verify(password, user.hashed_password):
-        return False
+        raise AUTHENTICATION_EXCEPTION 
+    if not bcrypt_context.verify(password, user.hashed_password): 
+        raise AUTHENTICATION_EXCEPTION
     return user
 
 def create_access_token(username: str, user_id: int, expires_delta: timedelta = timedelta(minutes=20)):
