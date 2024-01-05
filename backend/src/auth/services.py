@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
-from jose import jwt, JWTError
+from jose import ExpiredSignatureError, jwt, JWTError
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
@@ -57,5 +57,7 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         if username is None or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate user.")
         return {"username": username, "id": user_id}
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Access Token Expires")
     except JWTError:
        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate user.")
