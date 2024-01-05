@@ -8,6 +8,7 @@ from jose import ExpiredSignatureError, jwt, JWTError
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
+from ..database import Get_DB
 from .. import models, schemas
 
 SECRET_KEY = '36eefdd0b0fa8a635fee6cf33466fa2a79e4c0a278e942d5eb455646782d03d7'
@@ -61,7 +62,7 @@ def delete_user_from_db(email: str, db: Session) -> models.User:
     db.commit()
     return userDB
 
-def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
+def decode_access_token(token: Annotated[str, Depends(oauth2_bearer)]):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get('sub')
@@ -77,3 +78,9 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Access Token Expires")
     except JWTError:
        raise AUTHENTICATION_EXCEPTION
+    
+def get_current_user(user: Annotated[schemas.User, Depends(decode_access_token)], db: Annotated[Session, Depends(Get_DB)]):
+    userDB = get_user_from_db_by_email(user.email, db)
+    if not userDB:
+        raise USER_NOT_FOUND_EXCEPTION
+    return userDB
