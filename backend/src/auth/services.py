@@ -33,6 +33,21 @@ def create_access_token(username: str, user_id: int, expires_delta: timedelta = 
     encode.update({'exp': expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
+def add_new_user_to_db(username: str, password: str, db: Session):
+    userDB = db.query(models.User).filter(models.User.username == username).first()
+    if userDB:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Username already exists")
+    _hash_password = hash_password(password)
+    userDB = models.User(
+        username=username,
+        hashed_password=_hash_password
+    )
+    db.add(userDB)
+    db.commit()
+    db.refresh(userDB)
+    return userDB
+
+
 def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -40,6 +55,6 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         user_id: int = payload.get('id')
         if username is None or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate user.")
-        return {"username": username, "user_id": user_id}
+        return {"username": username, "id": user_id}
     except JWTError:
        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate user.")

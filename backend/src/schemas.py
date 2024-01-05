@@ -8,7 +8,7 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     username: str
-    user_id: int
+    id: int
 
 class Token(BaseModel):
     access_token: str
