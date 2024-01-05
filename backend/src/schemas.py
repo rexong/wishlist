@@ -6,9 +6,6 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
-class User(UserBase):
-    id: int
-
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -24,3 +21,9 @@ class WishCreate(WishBase):
 
 class Wish(WishBase):
     id: int
+    owner_id: int
+
+class User(UserBase):
+    id: int
+    wishes: list[Wish]
+
