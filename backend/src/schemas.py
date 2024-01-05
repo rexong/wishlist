@@ -18,3 +18,9 @@ class WishBase(BaseModel):
     description: str | None = None
     link: str | None = None
     is_hidden: bool = False
+
+class WishCreate(WishBase):
+    pass 
+
+class Wish(WishBase):
+    id: int
