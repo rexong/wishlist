@@ -12,3 +12,9 @@ class User(UserBase):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class WishBase(BaseModel):
+    title: str
+    description: str | None = None
+    link: str | None = None
+    is_hidden: bool = False
