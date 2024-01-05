@@ -16,5 +16,5 @@ db_dependency = Annotated[Session, Depends(Get_DB)]
 user_dependency = Annotated[schemas.User, Depends(get_current_user)]
 
 @app.get('/me', status_code = status.HTTP_200_OK, response_model=schemas.User)
-def user(user: user_dependency):
+def user(user: user_dependency, db: db_dependency):
     return user

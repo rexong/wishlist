@@ -21,19 +21,25 @@ AUTHENTICATION_EXCEPTION = HTTPException(status_code=status.HTTP_401_UNAUTHORIZE
 def hash_password(password):
     return bcrypt_context.hash(password)
 
-def authenticate_user(email: str, password: str, db: Session):
-    user = db.query(models.User).filter(models.User.email == email).first()
-    if not user:
+def authenticate_user(email: str, password: str, db: Session) -> models.User:
+    userDB = get_user_from_db_by_email(email, db)
+    if not userDB:
         raise AUTHENTICATION_EXCEPTION 
-    if not bcrypt_context.verify(password, user.hashed_password): 
+    if not bcrypt_context.verify(password, userDB.hashed_password): 
         raise AUTHENTICATION_EXCEPTION
-    return user
+    return userDB
 
 def create_access_token(email: str, user_id: int, expires_delta: timedelta = timedelta(minutes=20)):
     encode = {'sub': email, 'id': user_id}
     expires = datetime.utcnow() + expires_delta
     encode.update({'exp': expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+
+def get_user_from_db_by_email(email: str, db: Session) -> models.User:
+    userDB = db.query(models.User).filter(models.User.email == email).first()
+    if not userDB:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found!")
+    return userDB
 
 def add_new_user_to_db(email: str, password: str, db: Session):
     userDB = db.query(models.User).filter(models.User.email == email).first()
@@ -49,10 +55,8 @@ def add_new_user_to_db(email: str, password: str, db: Session):
     db.refresh(userDB)
     return userDB
 
-def delete_user_from_db(email: str, db: Session):
-    userDB = db.query(models.User).filter(models.User.email == email).first()
-    if not userDB:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not Found")
+def delete_user_from_db(email: str, db: Session) -> models.User:
+    userDB = get_user_from_db_by_email(email, db)
     db.delete(userDB)
     db.commit()
     return userDB
