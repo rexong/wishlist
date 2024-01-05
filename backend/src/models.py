@@ -9,7 +9,7 @@ class User(Base):
     email = Column(String, unique=True)
     hashed_password = Column(String)
 
-    items = relationship('Wish', back_populate="owner")
+    items = relationship('Wish', back_populates="owner")
 
 class Wish(Base):
     __tablename__ = "wishes"
