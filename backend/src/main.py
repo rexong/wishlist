@@ -3,21 +3,14 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 
 from . import models, schemas, auth
-from .database import engine, SessionLocal
+from .database import engine, Get_DB
 
 app = FastAPI()
 app.include_router(auth.router)
 
 models.Base.metadata.create_all(bind=engine)
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-db_dependency = Annotated[Session, Depends(get_db)]
+db_dependency = Annotated[Session, Depends(Get_DB)]
 user_dependency = Annotated[dict, Depends(auth.get_current_user)]
 
 @app.get('/', status_code = status.HTTP_200_OK)

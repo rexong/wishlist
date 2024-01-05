@@ -8,7 +8,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from . import schemas, models
-from .database import SessionLocal
+from .database import Get_DB
 
 router = APIRouter(
     prefix='/auth',
@@ -21,14 +21,7 @@ ALGORITHM = "HS256"
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-db_dependency = Annotated[Session, Depends(get_db)]
+db_dependency = Annotated[Session, Depends(Get_DB)]
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
 def create_user(db: db_dependency, user: schemas.UserCreate):
