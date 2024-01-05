@@ -21,27 +21,27 @@ AUTHENTICATION_EXCEPTION = HTTPException(status_code=status.HTTP_401_UNAUTHORIZE
 def hash_password(password):
     return bcrypt_context.hash(password)
 
-def authenticate_user(username: str, password: str, db: Session):
-    user = db.query(models.User).filter(models.User.username == username).first()
+def authenticate_user(email: str, password: str, db: Session):
+    user = db.query(models.User).filter(models.User.email == email).first()
     if not user:
         raise AUTHENTICATION_EXCEPTION 
     if not bcrypt_context.verify(password, user.hashed_password): 
         raise AUTHENTICATION_EXCEPTION
     return user
 
-def create_access_token(username: str, user_id: int, expires_delta: timedelta = timedelta(minutes=20)):
-    encode = {'sub': username, 'id': user_id}
+def create_access_token(email: str, user_id: int, expires_delta: timedelta = timedelta(minutes=20)):
+    encode = {'sub': email, 'id': user_id}
     expires = datetime.utcnow() + expires_delta
     encode.update({'exp': expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def add_new_user_to_db(username: str, password: str, db: Session):
-    userDB = db.query(models.User).filter(models.User.username == username).first()
+def add_new_user_to_db(email: str, password: str, db: Session):
+    userDB = db.query(models.User).filter(models.User.email == email).first()
     if userDB:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Username already exists")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email already exists")
     _hash_password = hash_password(password)
     userDB = models.User(
-        username=username,
+        email=email,
         hashed_password=_hash_password
     )
     db.add(userDB)
@@ -52,11 +52,11 @@ def add_new_user_to_db(username: str, password: str, db: Session):
 def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get('sub')
+        email: str = payload.get('sub')
         user_id: int = payload.get('id')
-        if username is None or user_id is None:
+        if email is None or user_id is None:
             raise AUTHENTICATION_EXCEPTION
-        return {"username": username, "id": user_id}
+        return {"email": email, "id": user_id}
     except ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Access Token Expires")
     except JWTError:
