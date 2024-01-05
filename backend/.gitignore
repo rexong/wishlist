@@ -1,5 +1,6 @@
 env
 src/__pycache__
 src/auth/__pycache__
+src/wish/__pycache__
 alembic/__pycache__
 alembic/versions/__pycache__

@@ -1,0 +1,41 @@
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, status
+from sqlalchemy.orm import Session
+
+from .services import add_new_wish_to_db
+from ..auth.services import get_current_user
+from ..database import Get_DB
+from .. import schemas
+
+router = APIRouter(
+    prefix='/wish',
+    tags=['wish']
+)
+
+db_dependency = Annotated[Session, Depends(Get_DB)]
+user_dependency = Annotated[schemas.User, Depends(get_current_user)]
+
+@router.get('/')
+def read_wish():
+    pass
+
+@router.get('/')
+def read_wishes():
+    pass
+
+@router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.Wish)
+def create_wishes(db: db_dependency, wish: schemas.WishCreate, user: user_dependency):
+    return add_new_wish_to_db(**wish.model_dump(), db=db, owner_id=user.id)
+
+@router.delete('/')
+def delete_wishes():
+    pass
+
+@router.put('/')
+def update_wishes():
+    pass
+
+@router.put('/')
+def toggle_is_hidden():
+    pass
