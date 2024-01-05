@@ -25,5 +25,5 @@ class Wish(WishBase):
 
 class User(UserBase):
     id: int
-    wishes: list[Wish]
+    wishes: list[Wish] = []
 
