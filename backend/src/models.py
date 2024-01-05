@@ -1,5 +1,6 @@
 from .database import Base
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "users"
@@ -7,6 +8,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True)
     hashed_password = Column(String)
+
+    items = relationship('Wish', back_populate="owner")
 
 class Wish(Base):
     __tablename__ = "wishes"
@@ -16,3 +19,6 @@ class Wish(Base):
     description = Column(String)
     link = Column(String)
     is_hidden = Column(Boolean, nullable=False, default=False)
+    owner_id = Column(Integer, ForeignKey('users.id'))
+
+    owner = relationship('User', back_populates='items')
