@@ -6,6 +6,10 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
+class User(UserBase):
+    username: str
+    user_id: int
+
 class Token(BaseModel):
     access_token: str
     token_type: str
