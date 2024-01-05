@@ -1,3 +1,4 @@
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from .. import models
@@ -33,3 +34,14 @@ def get_user_wishes_from_db(
         return wishes
     else:
         raise USER_NOT_FOUND_EXCEPTION
+
+def get_wish_from_db_by_id(db: Session, id: int) -> models.Wish | None:
+    return db.query(models.Wish).filter(models.Wish.id == id).first()
+
+def remove_wish_from_db(db: Session, id: int):
+    wishDB = get_wish_from_db_by_id(db, id)
+    if not wishDB:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Wish Not Found")
+    db.delete(wishDB)
+    db.commit()
+    return wishDB
