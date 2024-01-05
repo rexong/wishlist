@@ -37,6 +37,9 @@ def create_access_token(email: str, user_id: int, expires_delta: timedelta = tim
     encode.update({'exp': expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
+def get_user_from_db_by_id(id: int, db:Session) -> models.User | None:
+    return db.query(models.User).filter(models.User.id == id).first()
+
 def get_user_from_db_by_email(email: str, db: Session) -> models.User | None:
     return db.query(models.User).filter(models.User.email == email).first()
 
