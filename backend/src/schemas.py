@@ -17,7 +17,13 @@ class WishBase(BaseModel):
     is_hidden: bool = False
 
 class WishCreate(WishBase):
-    pass 
+    pass
+
+class WishEdit(WishBase):
+    title: str | None = None
+    description: str | None = None
+    link: str | None = None
+    is_hidden: bool | None = None
 
 class Wish(WishBase):
     id: int
@@ -26,4 +32,3 @@ class Wish(WishBase):
 class User(UserBase):
     id: int
     wishes: list[Wish] = []
-
