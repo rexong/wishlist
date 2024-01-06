@@ -9,16 +9,12 @@ from ..database import Get_DB
 from .. import schemas
 
 router = APIRouter(
-    prefix='/wish',
+    prefix='/wishes',
     tags=['wish']
 )
 
 db_dependency = Annotated[Session, Depends(Get_DB)]
 user_dependency = Annotated[schemas.User, Depends(get_current_user)]
-
-# @router.get('')
-# def read_wish():
-#     pass
 
 @router.get('', response_model=list[schemas.Wish])
 def read_wishes(user: user_dependency, db: db_dependency):

@@ -32,12 +32,14 @@ def get_user_wishes_from_db(
     owner_id: int
 ):
     userDB = get_user_from_db_by_id(db=db, id=owner_id)
-    if userDB:
-        wishes = userDB.items
-        return wishes
-    else:
+    if not userDB:
         raise USER_NOT_FOUND_EXCEPTION
+    wishes = userDB.wishes
+    return wishes
 
+def get_user_unhidden_wishes(db: Session, owner_id: int):
+    return db.query(models.Wish).filter(models.Wish.owner_id == owner_id, models.Wish.is_hidden == False).all()
+    
 def get_wish_from_db_by_id(db: Session, id: int) -> models.Wish | None:
     return db.query(models.Wish).filter(models.Wish.id == id).first()
 
