@@ -21,8 +21,6 @@ class WishCreate(WishBase):
 
 class WishEdit(WishBase):
     title: str | None = None
-    description: str | None = None
-    link: str | None = None
     is_hidden: bool | None = None
 
 class Wish(WishBase):
