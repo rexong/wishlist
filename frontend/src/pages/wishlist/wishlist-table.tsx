@@ -1,11 +1,12 @@
-import { Link as LinkIcon } from 'lucide-react'
+import { Link as LinkIcon, Eye, EyeOff, Trash } from 'lucide-react'
 
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getPaginationRowModel
+  getPaginationRowModel,
+  Cell
 } from "@tanstack/react-table"
 
 import {
@@ -36,6 +37,25 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   })
+
+  function renderCell(cell: Cell<TData, unknown>, i: number) {
+    if (i === 0) {
+      return <b>{flexRender(cell.column.columnDef.cell, cell.getContext())}</b>
+    }
+    if (i === 1) {
+      return flexRender(cell.column.columnDef.cell, cell.getContext())
+    }
+    if (i === 2) {
+      return renderLinkIcon(cell.renderValue() as string)
+    }
+    if (i === 3) {
+      const isHidden = cell.renderValue() as boolean
+      return isHidden ? <EyeOff /> : <Eye />
+    }
+    if (i === 4) {
+      return <Trash />
+    }
+  }
 
   function renderLinkIcon(link: string) {
     if (!link) {
@@ -80,12 +100,7 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell, i) => (
                     <TableCell className="text-lg" key={cell.id}>
-                      {i !== 2 ? ( 
-                        flexRender(cell.column.columnDef.cell, cell.getContext())
-                      ) : (
-                        renderLinkIcon(cell.renderValue() as string)
-                      )
-                    }
+                      {renderCell(cell, i)}
                     </TableCell>
                   ))}
                 </TableRow>

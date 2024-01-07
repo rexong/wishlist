@@ -13,4 +13,11 @@ export const columns: ColumnDef<TWish>[] = [
         accessorKey: "link",
         header: "Link"
     },
+    {
+        accessorKey: "is_hidden",
+        header: "Hide"
+    },
+    {
+        header: "Delete"
+    }
 ]
