@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -28,6 +29,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [currentPageNumber, setCurrentPageNumber] = useState(1)
   const table = useReactTable({
     data,
     columns,
@@ -102,15 +104,22 @@ export function DataTable<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.previousPage()}
+          onClick={() => {
+            table.previousPage()
+            setCurrentPageNumber(prev => prev - 1)
+          }}
           disabled={!table.getCanPreviousPage()}
         >
           Previous
         </Button>
+        <span>{currentPageNumber}</span>
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.nextPage()}
+          onClick={() => {
+            table.nextPage()
+            setCurrentPageNumber(prev => prev + 1)
+          }}
           disabled={!table.getCanNextPage()}
         >
           Next
