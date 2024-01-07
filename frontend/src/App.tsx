@@ -6,6 +6,7 @@ import WishlistScreen from "./pages/wishlist-screen"
 import NotFoundScreen from "./pages/not-found-screen"
 import AuthenticateScreen from "./pages/authentication-screen"
 import isAuthenticated from "./state"
+import ProfileScreen from "./pages/pofile-screen"
 
 function App() {  
 
@@ -19,6 +20,7 @@ function App() {
               <>
                 <Route path="/" element={<HomeScreen />} />
                 <Route path="/wishlist" element={<WishlistScreen />} />
+                <Route path="/profile" element={<ProfileScreen />} />
               </>
             ) : (
               <>
