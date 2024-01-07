@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import HomeScreen from "./pages/home-screen";
 import WishlistScreen from "./pages/wishlist-screen";
 import ProfileScreen from "./pages/pofile-screen";
-import AuthenticateScreen from "./pages/authentication-screen";
+import AuthenticateScreen from "./pages/authentication/authentication-screen";
 import NotFoundScreen from "./pages/not-found-screen";
 import isAuthenticated from "./state";
 
