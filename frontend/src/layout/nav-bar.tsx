@@ -1,9 +1,9 @@
 import { ModeToggle } from "@/components/mode-toggle"
-import { Button } from "@/components/ui/button"
 import UserAvatar from "@/components/user-avatar"
+import { Outlet } from "react-router-dom"
+import isAuthenticated from "@/state"
 
 export default function Navbar() {
-  const isAuthenticated = true
 
   return (
     <>
@@ -11,23 +11,14 @@ export default function Navbar() {
         <div className="flex item-center justify-between mx-36 my-4">
           <h2 className="basis-3/4 text-2xl">Wishlist</h2>
           <div className="basis-1/6 flex justify-evenly">
-            {isAuthenticated ? (
-              <>
-                <UserAvatar />
-              </>
-            ) :
-            (
-              <>
-                <Button>Login</Button>
-                <Button>Sign Up</Button> 
-              </>
-            )}
+            {isAuthenticated && <UserAvatar />}
             <div>
               <ModeToggle />
             </div>
           </div>
         </div>
       </nav>
+      <Outlet />
     </>
   ) 
 }

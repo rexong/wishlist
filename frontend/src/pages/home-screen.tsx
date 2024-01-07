@@ -1,12 +1,7 @@
-import { Button } from "@/components/ui/button";
+import WishlistScreen from "./wishlist-screen";
 
-export default function Home() {
+export default function HomeScreen() {
   return (
-      <>
-        <div>Home Page</div>
-        <Button>
-          Click Me!
-        </Button>
-      </>
+      <WishlistScreen />
   )
 }
