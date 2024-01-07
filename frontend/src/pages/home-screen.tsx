@@ -1,4 +1,4 @@
-import WishlistScreen from "./wishlist-screen";
+import WishlistScreen from "./wishlist/wishlist-screen";
 
 export default function HomeScreen() {
   return (
