@@ -35,7 +35,7 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
   })
 
-  function link_(link: string) {
+  function renderLinkIcon(link: string) {
     if (!link) {
         return null
     }
@@ -81,7 +81,7 @@ export function DataTable<TData, TValue>({
                       {i !== 2 ? ( 
                         flexRender(cell.column.columnDef.cell, cell.getContext())
                       ) : (
-                        link_(cell.renderValue() as string)
+                        renderLinkIcon(cell.renderValue() as string)
                       )
                     }
                     </TableCell>
