@@ -8,7 +8,7 @@ export default function UserAvatar() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <Avatar className="h-8 w-8">
+            <Avatar className="h-10 w-10">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>SC</AvatarFallback>
             </Avatar>
