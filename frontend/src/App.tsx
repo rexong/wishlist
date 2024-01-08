@@ -1,14 +1,13 @@
-import { Button } from './components/ui/button'
+import { ThemeProvider } from "./components/theme-provider"
+import MainLayout from "./layout/main-layout"
 
-function App() {
+function App() {  
 
   return (
     <>
-      <div className='grid place-items-center h-screen'>
-        <Button size='lg' variant='outline'>
-          Click me!
-        </Button>
-      </div>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <MainLayout />
+      </ThemeProvider>
     </>
   )
 }

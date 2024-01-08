@@ -1,7 +1,8 @@
-from .database import Base
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship, Mapped
-from sqlalchemy.orm.collections import InstrumentedList
+from sqlalchemy.orm import relationship
+
+from .database import Base
+
 
 class User(Base):
     __tablename__ = "users"
@@ -10,7 +11,8 @@ class User(Base):
     email = Column(String, unique=True)
     hashed_password = Column(String)
 
-    wishes = relationship('Wish', back_populates="owner")
+    wishes = relationship("Wish", back_populates="owner")
+
 
 class Wish(Base):
     __tablename__ = "wishes"
@@ -20,6 +22,6 @@ class Wish(Base):
     description = Column(String)
     link = Column(String)
     is_hidden = Column(Boolean, nullable=False, default=False)
-    owner_id = Column(Integer, ForeignKey('users.id'))
+    owner_id = Column(Integer, ForeignKey("users.id"))
 
-    owner = relationship('User', back_populates='wishes')
+    owner = relationship("User", back_populates="wishes")
